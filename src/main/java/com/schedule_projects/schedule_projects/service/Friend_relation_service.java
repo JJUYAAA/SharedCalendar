@@ -2,12 +2,15 @@ package com.schedule_projects.schedule_projects.service;
 
 import com.schedule_projects.schedule_projects.domain.Friend_relation;
 import com.schedule_projects.schedule_projects.domain.Friend_relationId;
+import com.schedule_projects.schedule_projects.domain.Relationship_status;
 import com.schedule_projects.schedule_projects.repository.Friend_relation_repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class Friend_relation_service {
@@ -21,7 +24,7 @@ public class Friend_relation_service {
     }
 
     /**
-     * 상태를 REQUESTED로 설정하고 새 친구 관계를 추가합니다.
+     * 상태를 requested로 설정하고 새 친구 관계를 추가합니다.
      *
      * @param userIdA 첫 번째 사용자 ID
      * @param userIdB 두 번째 사용자 ID
@@ -34,9 +37,9 @@ public class Friend_relation_service {
         Friend_relation friendRelation = new Friend_relation();
         friendRelation.setUserId1(userId1);
         friendRelation.setUserId2(userId2);
-        friendRelation.setRelationshipStatus(Relationship_status.REQUESTED);
+        friendRelation.setRelationshipStatus(Relationship_status.requested);
         friendRelation.setCreatedTime(LocalDateTime.now());
-        friendRelation.setUpdateTime(null); // 데이터베이스 업데이트 작업 시 updateTime은 자동으로 설정됩니다
+        friendRelation.setUpdateTime(null); // 데이터베이스 업데이트 작업 시 updateTime이 자동으로 설정됨
         friendRelationRepository.save(friendRelation);
     }
 
@@ -74,11 +77,11 @@ public class Friend_relation_service {
      */
     public String deleteFriendRelation(String userId1, String userId2) {
         // 두 사용자 간의 친구 관계를 조회
-        Optional<FriendRelation> existingRelation = friendRelationRepository.findByUserId1AndUserId2(userId1, userId2);
+        Optional<Friend_relation> existingRelation = friendRelationRepository.findByUserId1AndUserId2(userId1, userId2);
 
         // 관계가 존재하는 경우 삭제
         if (existingRelation.isPresent()) {
-            FriendRelation friendRelation = existingRelation.get();
+            Friend_relation friendRelation = existingRelation.get();
             friendRelationRepository.delete(friendRelation);
             return "친구 관계가 삭제되었습니다.";
         } else {
@@ -94,12 +97,12 @@ public class Friend_relation_service {
      */
     public String blockFriendRelation(String userId1, String userId2) {
         // 두 사용자 간의 친구 관계를 조회
-        Optional<FriendRelation> existingRelation = friendRelationRepository.findByUserId1AndUserId2(userId1, userId2);
+        Optional<Friend_relation> existingRelation = friendRelationRepository.findByUserId1AndUserId2(userId1, userId2);
 
         // 관계가 존재하는 경우 상태를 블록으로 변경
         if (existingRelation.isPresent()) {
-            FriendRelation friendRelation = existingRelation.get();
-            friendRelation.setRelationshipStatus(RelationshipStatus.BLOCKED);
+            Friend_relation friendRelation = existingRelation.get();
+            friendRelation.setRelationshipStatus(Relationship_status.blocked);
             friendRelationRepository.save(friendRelation);
             return "친구 관계가 블록되었습니다.";
         } else {
@@ -117,7 +120,7 @@ public class Friend_relation_service {
     @Transactional
     public Friend_relation getAcceptedFriendRelation(String userId1, String userId2) {
         Optional<Friend_relation> relation = friendRelationRepository.findByUserId1AndUserId2AndRelationshipStatus(
-                userId1, userId2, Relationship_status.ACCEPTED);
+                userId1, userId2, Relationship_status.accepted);
         return relation.orElse(null);  // relation이 존재하면 해당 객체를 반환하고, 없으면 null 반환
     }
 

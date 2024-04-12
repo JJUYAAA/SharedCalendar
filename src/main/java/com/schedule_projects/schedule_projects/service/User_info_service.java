@@ -2,17 +2,14 @@ package com.schedule_projects.schedule_projects.service;
 
 import com.schedule_projects.schedule_projects.domain.User_info;
 import com.schedule_projects.schedule_projects.repository.User_info_repository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class User_info_service {
 
-    @Autowired
     private User_info_repository userInfoRepository;
 
     @Transactional(readOnly = true)

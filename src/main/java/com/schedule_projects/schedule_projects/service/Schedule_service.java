@@ -2,19 +2,19 @@ package com.schedule_projects.schedule_projects.service;
 
 import com.schedule_projects.schedule_projects.domain.Schedule;
 import com.schedule_projects.schedule_projects.repository.Schedule_repository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 
 @Service
 public class Schedule_service {
 
-    @Autowired
     private Schedule_repository scheduleRepository;
     @Transactional(readOnly = true)
     public Optional<Schedule> getUserSchedules(String userId) {
@@ -92,8 +92,8 @@ public class Schedule_service {
 
         // 모든 일정의 날짜를 추출하여 중복을 제거하고 정렬
         List<LocalDate> allDates = new ArrayList<>();
-        allDates.addAll(schedules1.stream().map(Schedule::getStartTime).map(LocalDateTime::toLocalDate).collect(Collectors.toList()));
-        allDates.addAll(schedules2.stream().map(Schedule::getStartTime).map(LocalDateTime::toLocalDate).collect(Collectors.toList()));
+        allDates.addAll(schedules1.stream().map(Schedule::getStartTime).map(LocalDateTime::toLocalDate).toList());
+        allDates.addAll(schedules2.stream().map(Schedule::getStartTime).map(LocalDateTime::toLocalDate).toList());
         allDates.sort(LocalDate::compareTo);
 
         // 두 사용자의 일정이 모두 없는 날짜를 찾아 반환
@@ -109,6 +109,7 @@ public class Schedule_service {
         while (!currentDate.isAfter(endDate)) {
             datesWithNoSchedules.add(currentDate);
             currentDate = currentDate.plusDays(1);
+        }
         return datesWithNoSchedules;
     }
 }
