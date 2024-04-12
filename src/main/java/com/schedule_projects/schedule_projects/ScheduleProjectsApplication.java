@@ -8,6 +8,9 @@ public class ScheduleProjectsApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ScheduleProjectsApplication.class, args);
+		if (args.length != 1) {
+			System.out.println("");
+		}
 	}
 
 }

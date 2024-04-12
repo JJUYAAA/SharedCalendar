@@ -1,11 +1,18 @@
 package com.schedule_projects.schedule_projects.domain;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 
 @Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "friend_relation")
-@IdClass(FriendRelationId.class) // 복합키 클래스
+@IdClass(Friend_relationId.class) // 복합키 클래스
 public class Friend_relation {
     @Id
     @Column(name = "user_id1", length = 20)
@@ -17,14 +24,12 @@ public class Friend_relation {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "relationship_status", nullable = false)
-    private RelationshipStatus relationshipStatus;
+    private Relationship_status relationshipStatus;
 
     @Column(name = "created_time", nullable = false, updatable = false)
     private LocalDateTime createdTime;
 
     @Column(name = "update_time", insertable = false)
     private LocalDateTime updateTime;
-
-    // 기본 생성자, 게터, 세터
 }
 

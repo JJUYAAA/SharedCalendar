@@ -1,13 +1,19 @@
 package com.schedule_projects.schedule_projects.domain;
 
 import jakarta.persistence.*;
+import lombok.*;
+
 import java.time.LocalDateTime;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "schedule")
 public class Schedule {
     @Id
-    @Column(name = "event_id", length = 255, nullable = false)
+    @Column(name = "event_id", length = 255, nullable = false, unique = true)
     private String eventId;
 
     @ManyToOne
@@ -34,22 +40,5 @@ public class Schedule {
 
     @Column(name = "update_time", insertable = false)
     private LocalDateTime updateTime;
-
-    //생산자
-    public Schedule() {};
-
-    public Schedule(String eventId, String title, String description, LocalDateTime startTime, LocalDateTime endTime, String location, LocalDateTime createdTime, LocalDateTime updateTime) {
-        this.eventId = eventId;
-        this.title = title;
-        this.description = description;
-        this.startTime = startTime;
-        this.endTime = LocalDateTime.now();
-    }
-    //getter
-    public String getEventId() {return eventId;}
-    public String getTitle() {return title;}
-    public String getDescription() {return description;}
-    public LocalDateTime getStartTime() {return startTime;}
-    public void setEventId(String eventId) {this.eventId = eventId;}
 }
 
