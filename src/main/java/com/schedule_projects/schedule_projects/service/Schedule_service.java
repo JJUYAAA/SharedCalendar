@@ -37,34 +37,78 @@ public class Schedule_service {
     }
 
     /**
-     * 주어진 시간 범위에 해당하는 모든 스케줄의 시작 시간과 종료 시간 사이의 시간 차이를 계산합니다.
-     * @param start 조회할 스케줄의 시작 시간
-     * @param end 조회할 스케줄의 종료 시간
-     * @return 모든 스케줄의 시작 시간과 종료 시간 사이의 총 시간 차이 (초)
+     * 주어진 사용자의 모든 일정에서 시작 날짜와 종료 날짜 사이의 모든 날짜를 가져옵니다.
+     * @param userId 사용자 ID
+     * @return 일정이 있는 모든 날짜 목록
      */
-    public long calculateTimeDifferenceForSchedules(LocalDateTime start, LocalDateTime end) {
-        // 주어진 시간 범위에 해당하는 스케줄 조회
-        List<Schedule> schedules = scheduleRepository.findByStartTimeBetween(start, end);
-        // 총 시간 차이를 저장할 변수 초기화
-        long totalTimeDifference = 0;
+    public List<LocalDate> getAllScheduleByUser(String userId) {
+        // 사용자의 모든 일정 조회
+        List<Schedule> schedules = scheduleRepository.findByUserId(userId);
 
-        // 조회된 각 스케줄에 대해 시작 시간과 종료 시간 사이의 시간 차이를 계산하여 총 시간 차이에 더함
+        // 일정이 있는 모든 날짜를 저장할 리스트 초기화
+        List<LocalDate> allDatesWithSchedule = new ArrayList<>();
+
+        // 모든 일정에서 시작 날짜와 종료 날짜 사이의 모든 날짜를 생성하여 리스트에 추가
         for (Schedule schedule : schedules) {
-            long timeDifference = calculateTimeDifference(schedule.getStartTime(), schedule.getEndTime());
-            totalTimeDifference += timeDifference;
+            LocalDateTime startDate = schedule.getStartTime();
+            LocalDateTime endDate = schedule.getEndTime();
+            List<LocalDate> datesBetween = getAllDatesBetween(startDate.toLocalDate(), endDate.toLocalDate());
+            allDatesWithSchedule.addAll(datesBetween);
         }
 
-        return totalTimeDifference;
+        return allDatesWithSchedule;
     }
 
     /**
-     * 두 시간 사이의 시간 차이를 계산하여 반환합니다.
-     * @param startTime 시작 시간
-     * @param endTime 종료 시간
-     * @return 시작 시간과 종료 시간 사이의 시간 차이 (초)
+     * 시작 날짜와 종료 날짜 사이의 모든 날짜를 가져옵니다.
+     * @param startDate 시작 날짜
+     * @param endDate 종료 날짜
+     * @return 시작 날짜와 종료 날짜 사이의 모든 날짜 목록
      */
-    private long calculateTimeDifference(LocalDateTime startTime, LocalDateTime endTime) {
-        // 시작 시간과 종료 시간을 유닉스 타임으로 변환하여 시간 차이를 계산하여 반환
-        return endTime.toEpochSecond(ZoneOffset.UTC) - startTime.toEpochSecond(ZoneOffset.UTC);
+    private List<LocalDate> getAllDatesBetween(LocalDate startDate, LocalDate endDate) {
+        List<LocalDate> allDates = new ArrayList<>();
+        LocalDate currentDate = startDate;
+
+        while (!currentDate.isAfter(endDate)) {
+            allDates.add(currentDate);
+            currentDate = currentDate.plusDays(1);
+        }
+
+        return allDates;
+    }
+
+    /**
+     * 주어진 두 사용자의 일정이 모두 없는 날짜를 가져옵니다.
+     * @param startDate    시작 날짜
+     * @param endDate      종료 날짜
+     * @param userId1      첫 번째 사용자의 ID
+     * @param userId2      두 번째 사용자의 ID
+     * @return             두 사용자의 일정이 모두 없는 날짜 목록
+     */
+    public List<LocalDate> getDatesWithNoSchedules(LocalDate startDate, LocalDate endDate, String userId1, String userId2) {
+        // 주어진 기간 동안 첫 번째 사용자와 두 번째 사용자의 모든 일정을 가져옴
+        List<Schedule> schedules1 = scheduleRepository.findByUserIdAndDateRange(userId1, startDate, endDate);
+        List<Schedule> schedules2 = scheduleRepository.findByUserIdAndDateRange(userId2, startDate, endDate);
+
+        // 모든 일정의 날짜를 추출하여 중복을 제거하고 정렬
+        List<LocalDate> allDates = new ArrayList<>();
+        allDates.addAll(schedules1.stream().map(Schedule::getStartTime).map(LocalDateTime::toLocalDate).collect(Collectors.toList()));
+        allDates.addAll(schedules2.stream().map(Schedule::getStartTime).map(LocalDateTime::toLocalDate).collect(Collectors.toList()));
+        allDates.sort(LocalDate::compareTo);
+
+        // 두 사용자의 일정이 모두 없는 날짜를 찾아 반환
+        List<LocalDate> datesWithNoSchedules = new ArrayList<>();
+        LocalDate currentDate = startDate;
+        for (LocalDate date : allDates) {
+            while (currentDate.isBefore(date)) {
+                datesWithNoSchedules.add(currentDate);
+                currentDate = currentDate.plusDays(1);
+            }
+            currentDate = currentDate.plusDays(1);
+        }
+        while (!currentDate.isAfter(endDate)) {
+            datesWithNoSchedules.add(currentDate);
+            currentDate = currentDate.plusDays(1);
+        return datesWithNoSchedules;
     }
 }
