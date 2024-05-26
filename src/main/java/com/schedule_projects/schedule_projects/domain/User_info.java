@@ -31,7 +31,4 @@ public class User_info {
 
     @Column(name = "update_time", insertable = false)
     private LocalDateTime updateTime;
-
-    @Enumerated(EnumType.STRING)
-    private Relationship_status relationshipStatus;
 }
