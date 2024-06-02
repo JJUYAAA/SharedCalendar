@@ -14,13 +14,13 @@ import java.time.LocalDateTime;
 public class Schedule {
     @Id
     @Column(name = "event_id", length = 255, nullable = false, unique = true)
-    private String eventId;
+    private int eventId;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User_info user;
 
-    @Column(name = "title", length = 255, nullable = false)
+    @Column(name = "schedule_title", length = 255, nullable = false)
     private String title;
 
     @Column(name = "description", columnDefinition = "TEXT")

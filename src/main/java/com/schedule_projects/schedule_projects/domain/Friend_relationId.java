@@ -6,8 +6,8 @@ import lombok.Data;
 
 @Data
 public class Friend_relationId implements Serializable {
-    private String userId1; // FriendRelation 엔티티의 user_id1과 일치
-    private String userId2; // FriendRelation 엔티티의 user_id2와 일치
+    private int userId1; // FriendRelation 엔티티의 user_id1과 일치
+    private int userId2; // FriendRelation 엔티티의 user_id2와 일치
 
     // equals()와 hashCode() 오버라이드
     @Override

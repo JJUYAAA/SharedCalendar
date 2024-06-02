@@ -15,12 +15,17 @@ import java.time.LocalDateTime;
 @IdClass(Friend_relationId.class) // 복합키 클래스
 public class Friend_relation {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "relation_id", length = 20)
+    private int relation_id;
+
+    @Id
     @Column(name = "user_id1", length = 20)
-    private String userId1;
+    private int userId1;
 
     @Id
     @Column(name = "user_id2", length = 20)
-    private String userId2;
+    private int userId2;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "relationship_status", nullable = false)
