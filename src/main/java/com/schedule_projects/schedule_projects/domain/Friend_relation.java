@@ -12,20 +12,19 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "friend_relation")
-@IdClass(Friend_relationId.class) // 복합키 클래스
 public class Friend_relation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "relation_id", length = 20)
     private int relation_id;
 
-    @Id
-    @Column(name = "user_id1", length = 20)
-    private int userId1;
+    @ManyToOne
+    @JoinColumn(name = "user_id1", referencedColumnName = "user_id")
+    private User_info userId1;
 
-    @Id
-    @Column(name = "user_id2", length = 20)
-    private int userId2;
+    @ManyToOne
+    @JoinColumn(name = "user_id2", referencedColumnName = "user_id")
+    private User_info userId2;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "relationship_status", nullable = false)

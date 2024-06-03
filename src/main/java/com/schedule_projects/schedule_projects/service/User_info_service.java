@@ -4,25 +4,45 @@ import com.schedule_projects.schedule_projects.domain.User_info;
 import com.schedule_projects.schedule_projects.repository.User_info_repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
+import java.util.logging.Logger;
+import java.util.Optional;
 
 @Service
 public class User_info_service {
     @Autowired
     private User_info_repository user_info_repository;
 
-    // 로그인 서비스 구현
-    public int login(String identifier, String password) {
-        // 입력된 identifier와 password로 쿼리
-        User_info user = user_info_repository.findByIdentifierAndPassword(identifier, password);
-        // user_id가 null이 아니면 로그인 성공
-        if (user != null) {
-            return user.getUserId();
+    private static final Logger logger = Logger.getLogger(User_info_service.class.getName());  // Logger 변수 선언 추가
+
+    public User_info getUserById(int userId) {
+        Optional<User_info> user = user_info_repository.findByUserId(userId);
+        if (user.isPresent()) {
+            return user.get();
         } else {
-            // 로그인 실패 시 -1 리턴
-            return -1;
+            throw new RuntimeException("User not found with id: " + userId);
         }
+    }
+    public boolean validateUser(String identifier, String password) {
+        return user_info_repository.findByIdentifierAndPassword(identifier, password).isPresent();
+    }
+
+    public boolean registerUser(String identifier, String password, String userName) {
+        logger.info("Registering user: " + identifier + ", userName: " + userName);
+        Optional<User_info> existingUser = user_info_repository.findByIdentifier(identifier);
+        if (existingUser.isPresent()) {
+            logger.info("User already exists: " + identifier);
+            return false;
+        }
+        User_info newUser = new User_info();
+        newUser.setIdentifier(identifier);
+        newUser.setPassword(password);
+        newUser.setUserName(userName);
+
+        user_info_repository.save(newUser);
+        logger.info("User registered successfully: " + identifier);
+        return true;
+    }
+    public Optional<User_info> findByIdentifier(String identifier) {
+        return user_info_repository.findByIdentifier(identifier);
     }
 }

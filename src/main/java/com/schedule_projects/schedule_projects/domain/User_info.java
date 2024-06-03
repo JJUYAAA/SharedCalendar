@@ -31,4 +31,17 @@ public class User_info {
 
     @Column(name = "update_time", insertable = false)
     private LocalDateTime updateTime;
+
+    // 새로운 사용자 생성 시 생성 시간 설정
+    @PrePersist
+    protected void onCreate() {
+        createdTime = LocalDateTime.now();
+        updateTime = LocalDateTime.now();
+    }
+
+    // 사용자 정보 업데이트 시 갱신 시간 설정
+    @PreUpdate
+    protected void onUpdate() {
+        updateTime = LocalDateTime.now();
+    }
 }
