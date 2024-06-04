@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Join</title>
+  <style>
+    table {
+      width: 280px;
+      height: 550px;
+      margin: auto;
+    }
+    .email {
+      width: 127px;
+      height: 32px;
+      font-size: 15px;
+      border: 0;
+      border-color: lightgray;
+      border-radius: 15px;
+      outline: none;
+      padding-left: 10px;
+      background-color: rgb(233,233,233);
+    }
+    .text {
+      width: 250px;
+      height: 32px;
+      font-size: 15px;
+      border: 0;
+      border-radius: 15px;
+      outline: none;
+      padding-left: 10px;
+      background-color: rgb(233,233,233);
+    }
+    select {
+      width: 100px;
+      height: 32px;
+      font-size: 15px;
+      border: 1px solid lightgray;
+      border-color: lightgray;
+      border-radius: 15px;
+      outline: none;
+      padding-left: 10px;
+    }
+    .btn {
+      width: 262px;
+      height: 32px;
+      font-size: 15px;
+      border: 0;
+      border-radius: 15px;
+      outline: none;
+      padding-left: 10px;
+      background-color: rgb(164, 199, 255);
+    }
+    .btn:active {
+      width: 262px;
+      height: 32px;
+      font-size: 15px;
+      border: 0;
+      border-radius: 15px;
+      outline: none;
+      padding-left: 10px;
+      background-color: rgb(61, 135, 255);
+    }
+  </style>
+</head>
+<body>
+<form action="login.html" id="joinForm">
+  <table>
+    <tr>
+      <td><h2>회원가입</h2></td>
+    </tr>
+    <tr><td>아이디</td></tr>
+    <tr><td><input type="text" class="text" id="username"></td></tr>
+    <tr><td>비밀번호</td></tr>
+    <tr><td><input type="password" class="text" id="password"></td></tr>
+    <tr><td>비밀번호 확인</td></tr>
+    <tr><td><input type="password" class="text" id="confirmPassword"></td></tr>
+    <tr><td>이름</td></tr>
+    <tr><td><input type="text" class="text" id="name"></td></tr>
+    <tr><td>생년월일</td></tr>
+    <tr><td><input type="date" class="text" id="birthday"></td></tr>
+    <tr><td>이메일</td></tr>
+    <tr>
+      <td><input type="text" class="email"> @
+        <select>
+          <option>naver.com</option>
+          <option>gmail.com</option>
+          <option>daum.net</option>
+          <option>nate.com</option>
+        </select>
+      </td>
+    </tr>
+    <tr><td><input type="submit" value="가입하기" class="btn"></td></tr>
+  </table>
+</form>
+
+<script>
+  document.getElementById("joinForm").addEventListener("submit", function(event) {
+    event.preventDefault(); // 기본 제출 행동 방지
+
+    // 각 입력 필드에서 값을 가져옵니다.
+    var username = document.getElementById("username").value;
+    var password = document.getElementById("password").value;
+    var confirmPassword = document.getElementById("confirmPassword").value;
+    var name = document.getElementById("name").value;
+    var birthday = document.getElementById("birthday").value;
+
+    // 여기서는 간단히 비밀번호 확인을 하고 가입 성공을 가정합니다.
+    if (password === confirmPassword) {
+      alert("가입 성공!");
+      // 가입 성공 시 이동할 페이지의 URL을 설정합니다.
+      window.location.href = "login+.html";
+    } else {
+      alert("비밀번호가 일치하지 않습니다. 다시 시도해주세요.");
+    }
+  });
+</script>
+</body>
+</html>
