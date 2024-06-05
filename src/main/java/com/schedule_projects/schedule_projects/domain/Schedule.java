@@ -14,7 +14,8 @@ import java.time.LocalDateTime;
 @Table(name = "schedule")
 public class Schedule {
     @Id
-    @Column(name = "event_id", length = 255, nullable = false, unique = true)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "event_id", length = 255)
     private int eventId;
 
     @ManyToOne
