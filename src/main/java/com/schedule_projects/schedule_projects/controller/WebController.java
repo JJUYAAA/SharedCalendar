@@ -30,9 +30,14 @@ public class WebController {
 
     private static final Logger logger = Logger.getLogger(WebController.class.getName());
 
-    @GetMapping("/login")
-    public String loginForm() {
-        return "login"; // login.html 반환
+    @GetMapping("/login+")
+    public String login1Form() {
+        return "login+"; // login.html 반환
+    }
+
+    @GetMapping("/index_1")
+    public String index1Form() {
+        return "index_1"; // login.html 반환
     }
 
     @GetMapping("/newuser")
@@ -69,67 +74,33 @@ public class WebController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
-
-    @GetMapping("/index")
-    public String indexForm() {
-        return "index"; // index.html 반환
-    }
-
-    // 친구 신청 엔드포인트
-    @PostMapping("/request-friend")
-    public String requestFriend(@RequestParam int userId1, @RequestParam int userId2) {
-        return friend_relation_service.requestFriend(userId1, userId2);
-    }
-
-    // 친구 신청 수락 엔드포인트
-    @PostMapping("/accept-friend")
-    public void acceptFriend(@RequestParam int userId1, @RequestParam int userId2) {
-        friend_relation_service.acceptFriend(userId1, userId2);
-    }
-
-    // 친구 삭제 엔드포인트
-    @DeleteMapping("/delete-friend")
-    public String deleteFriend(@RequestParam int userId1, @RequestParam int userId2) {
-        return friend_relation_service.deleteFriend(userId1, userId2);
-    }
-
-    // 친구 관계 조회 엔드포인트
-    @GetMapping("/friends")
-    public List<Friend_relation> getFriends(@RequestParam int userId) {
-        return friend_relation_service.getFriends(userId);
-    }
-
-    // 스케줄 비교할 친구 지정 엔드포인트
-    @PostMapping("/set-schedule-user")
-    public String setScheduleUser(@RequestParam int userId1, @RequestParam int userId2) {
-        if (friend_relation_service.getFriends(userId1).stream()
-                .anyMatch(f -> f.getUserId2().getUserId() == userId2 && f.getRelationshipStatus() == Relationship_status.accepted)) {
-            return "스케줄 비교할 친구 지정 완료";
-        }
-        return "친구관계가 아닌 대상입니다";
-    }
-    @PostMapping("/api/login")
-    public Map<String, Object> login(@RequestBody Map<String, String> user) {
-        String identifier = user.get("identifier");
+    @PostMapping("/request_login")
+    public ResponseEntity<Map<String, Object>> requestLogin(@RequestBody Map<String, String> user) {
+        String username = user.get("username");
         String password = user.get("password");
 
         Map<String, Object> response = new HashMap<>();
-        Optional<User_info> optionalUser = user_info_service.findByIdentifier(identifier);
+        try {
+            boolean isAuthenticated = user_info_service.validateUser(username, password);
 
-        if (optionalUser.isPresent()) {
-            User_info userInfo = optionalUser.get();
-            if (userInfo.getPassword().equals(password)) {
+            if (isAuthenticated) {
                 response.put("success", true);
-                response.put("message", "로그인 성공");
-                // 여기에서 세션 또는 JWT 토큰을 생성하여 클라이언트에게 전달할 수 있습니다.
+                response.put("message", "로그인이 성공적으로 완료되었습니다.");
+                return ResponseEntity.ok(response);
             } else {
                 response.put("success", false);
-                response.put("message", "비밀번호가 올바르지 않습니다.");
+                response.put("message", "잘못된 사용자 이름 또는 비밀번호입니다.");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
             }
-        } else {
+        } catch (Exception e) {
             response.put("success", false);
-            response.put("message", "사용자를 찾을 수 없습니다.");
+            response.put("message", "서버 오류가 발생했습니다.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
-        return response;
+    }
+    @GetMapping("/schedules")
+    public ResponseEntity<List<Schedule>> getSchedules(@RequestParam String username) {
+        List<Schedule> schedules = schedule_service.findSchedulesByUsername(username);
+        return ResponseEntity.ok(schedules);
     }
 }
