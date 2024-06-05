@@ -103,4 +103,15 @@ public class WebController {
         List<Schedule> schedules = schedule_service.findSchedulesByUsername(username);
         return ResponseEntity.ok(schedules);
     }
+    @PostMapping("/saveSchedule")
+    public ResponseEntity<Boolean> saveSchedule(@RequestParam String username, @RequestBody Schedule schedule) {
+        logger.info("Received schedule: " + schedule.getColor()+schedule.getStartTime()+schedule.getEndTime()); // 로그로 schedule 객체 출력
+        User_info user = user_info_service.findByUserName(username);
+        if (user != null) {
+            boolean result = schedule_service.saveSchedule(user, schedule);
+            return ResponseEntity.ok(result); // HTTP 200 OK와 함께 boolean 값을 반환
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false); // 사용자 찾지 못했을 경우 HTTP 404와 false 반환
+        }
+    }
 }

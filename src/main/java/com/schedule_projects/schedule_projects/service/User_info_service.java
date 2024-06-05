@@ -42,7 +42,8 @@ public class User_info_service {
         logger.info("User registered successfully: " + identifier);
         return true;
     }
-    public Optional<User_info> findByIdentifier(String identifier) {
-        return user_info_repository.findByIdentifier(identifier);
+    public User_info findByUserName(String userName) {
+        return user_info_repository.findByUserName(userName);
     }
+
 }

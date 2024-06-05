@@ -4,6 +4,8 @@ import com.schedule_projects.schedule_projects.domain.Schedule;
 import com.schedule_projects.schedule_projects.domain.User_info;
 import com.schedule_projects.schedule_projects.repository.Schedule_repository;
 import com.schedule_projects.schedule_projects.repository.User_info_repository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,8 +27,22 @@ public class Schedule_service {
             throw new RuntimeException("User not found");
         }
     }
-    public Schedule saveSchedule(Schedule schedule) {
-        return schedule_repository.save(schedule);
+    private static final Logger logger = LoggerFactory.getLogger(Schedule_service.class);
+
+    public boolean saveSchedule(User_info user, Schedule schedule) {
+        logger.info("Saving schedule for user: " + user.getUserId());
+        Schedule newschedule = new Schedule();
+        // 새로운 일정 저장
+        newschedule.setUser(user);
+        newschedule.setTitle(schedule.getTitle());
+        newschedule.setStartTime(schedule.getStartTime());
+        newschedule.setEndTime(schedule.getEndTime());
+        newschedule.setColor(schedule.getColor());
+        logger.info("New schedule: "+"user" + newschedule.getUser()+"startTime"+newschedule.getStartTime()+"endTime"+newschedule.getEndTime()+"color"+newschedule.getColor());
+        schedule_repository.save(newschedule);
+        logger.info("Schedule saved successfully: "+schedule.getStartTime()+schedule.getEndTime());
+
+        return true;
     }
 }
 

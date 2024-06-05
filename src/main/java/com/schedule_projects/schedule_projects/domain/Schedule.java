@@ -1,5 +1,6 @@
 package com.schedule_projects.schedule_projects.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,9 +27,11 @@ public class Schedule {
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
     @Column(name = "start_time", nullable = false)
     private LocalDateTime startTime;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
     @Column(name = "end_time", nullable = false)
     private LocalDateTime endTime;
 
@@ -40,5 +43,20 @@ public class Schedule {
 
     @Column(name = "update_time", insertable = false)
     private LocalDateTime updateTime;
+
+    @Column(name = "color", nullable = false)
+    private String color;
+
+    @PrePersist
+    protected void onCreate() {
+        createdTime = LocalDateTime.now();
+        updateTime = LocalDateTime.now();
+    }
+
+    // 사용자 정보 업데이트 시 갱신 시간 설정
+    @PreUpdate
+    protected void onUpdate() {
+        updateTime = LocalDateTime.now();
+    }
 }
 
