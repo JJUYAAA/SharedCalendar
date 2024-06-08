@@ -8,8 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class Schedule_service {
@@ -43,6 +45,10 @@ public class Schedule_service {
         logger.info("Schedule saved successfully: "+schedule.getStartTime()+schedule.getEndTime());
 
         return true;
+    }
+    @Transactional
+    public void deleteScheduleByTitle(String title) {
+        schedule_repository.deleteByTitle(title);
     }
 }
 

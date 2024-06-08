@@ -4,6 +4,8 @@ import com.schedule_projects.schedule_projects.domain.User_info;
 import com.schedule_projects.schedule_projects.repository.User_info_repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.logging.Logger;
 import java.util.Optional;
 
@@ -46,4 +48,7 @@ public class User_info_service {
         return user_info_repository.findByUserName(userName);
     }
 
+    public List<User_info> findByConnectionStatus(String connected) {
+        return user_info_repository.findByConnectionStatus(connected);
+    }
 }

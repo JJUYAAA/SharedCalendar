@@ -32,6 +32,9 @@ public class User_info {
     @Column(name = "update_time", insertable = false)
     private LocalDateTime updateTime;
 
+    @Column(name = "connection_status", nullable = false)
+    private String connectionStatus = "disconnected";
+
     // 새로운 사용자 생성 시 생성 시간 설정
     @PrePersist
     protected void onCreate() {

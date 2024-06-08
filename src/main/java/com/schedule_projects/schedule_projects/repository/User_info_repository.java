@@ -3,6 +3,7 @@ package com.schedule_projects.schedule_projects.repository;
 import com.schedule_projects.schedule_projects.domain.User_info;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface User_info_repository extends JpaRepository<User_info, String> {
@@ -13,4 +14,6 @@ public interface User_info_repository extends JpaRepository<User_info, String> {
 
     Optional<User_info> findByIdentifier(String identifier);
     User_info findByUserName(String userName);
+
+    List<User_info> findByConnectionStatus(String connected);
 }
